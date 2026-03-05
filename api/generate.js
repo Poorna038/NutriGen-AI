@@ -5,6 +5,7 @@ const groq = new Groq({
 });
 
 export default async function handler(req, res) {
+
   // -------- CORS HEADERS --------
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -21,6 +22,7 @@ export default async function handler(req, res) {
   }
 
   try {
+
     const { ingredients } = req.body;
 
     if (!ingredients) {
@@ -35,15 +37,41 @@ export default async function handler(req, res) {
         {
           role: "system",
           content:
-            "You are a professional chef AI. Generate a clear recipe using the provided ingredients.",
+            "You are a professional chef and nutrition expert. Generate clear recipes with nutrition information.",
         },
         {
           role: "user",
-          content: `Create a recipe using these ingredients: ${ingredients}. Include recipe name, ingredients list, and step-by-step instructions.`,
+          content: `Create a recipe using these ingredients: ${ingredients}.
+
+IMPORTANT:
+Return the response as normal readable text.
+DO NOT return JSON or code blocks.
+
+Format exactly like this:
+
+Recipe Name
+
+Ingredients:
+- ingredient
+- ingredient
+
+Nutrition Information:
+Calories:
+Protein:
+Fat:
+Carbohydrates:
+Fiber:
+Vitamins:
+
+Instructions:
+1. Step one
+2. Step two
+3. Step three
+`,
         },
       ],
       temperature: 0.7,
-      max_tokens: 500,
+      max_tokens: 600,
     });
 
     const recipe = completion.choices[0].message.content;
@@ -51,12 +79,14 @@ export default async function handler(req, res) {
     return res.status(200).json({
       recipe: recipe,
     });
+
   } catch (error) {
+
     console.error("AI generation error:", error);
 
     return res.status(500).json({
       error: "AI generation failed",
     });
+
   }
 }
-
