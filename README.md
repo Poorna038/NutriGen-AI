@@ -1,160 +1,93 @@
+# NutriGen AI 🥗🤖
 
+NutriGen AI is an **AI-powered recipe generation web application** that creates personalized meals based on the ingredients users already have and their dietary preferences.
 
-# 🍽️ Nutrigen AI – Smart AI Recipe & Diet Customizer
-
-**Nutrigen AI** is a modern AI-powered recipe and diet customization web application designed to help users discover and generate personalized recipes based on their dietary needs and available ingredients.
-
-This project focuses on **UI/UX design and prototyping**, built using **Figma and Framer**, demonstrating how AI can be integrated into a smart nutrition platform. The application allows users to explore recipes and generate new ones using AI based on preferences such as ingredients, calories, diet type, and cooking time.
-
-🔗 **Live Prototype:**
-[https://attractive-products-425244.framer.app/](https://attractive-products-425244.framer.app/)
+The platform allows users to enter ingredients and apply filters such as **diet type, calorie limits, allergies, cooking time, and mood**. Using AI integration, the system instantly generates a complete recipe including ingredients, preparation steps, and nutritional insights.
 
 ---
 
-# 📌 Project Overview
-
-Nutrigen AI aims to simplify the cooking and diet planning process by using AI to generate customized recipes. Instead of manually searching for recipes, users can input ingredients, dietary preferences, calorie limits, or cooking time to generate smart recipe suggestions.
-
-The current version focuses on **design, interaction flow, and user experience**, while the **AI backend functionality is planned for future development**.
-
-The UI was designed in **Figma**, and the interactive prototype was developed in **Framer**, a modern no-code website builder that allows designers to create and publish responsive websites with interactive elements. ([UI Things][1])
+## 🚀 Live Demo
+🔗 https://attractive-products-425244.framer.app/
 
 ---
 
-# ✨ Key Features
-
-* **AI Recipe Generation**
-  Generate recipes based on ingredients, calorie preferences, cooking time, and dietary type.
-
-* **Recipe Search System**
-  Users can search recipes stored in the system.
-
-* **Diet Customization**
-  Filter recipes by:
-
-  * Vegetarian / Non-Vegetarian
-  * Ingredients available
-  * Calories
-  * Cooking time
-
-* **AI-Based Meal Suggestions (Planned)**
-  AI will generate smart recipes and diet plans.
-
-* **Modern UI/UX Design**
-  Clean, minimal, and intuitive user interface designed for smooth user interaction.
+## 📂 GitHub Repository
+🔗 https://github.com/Poorna038/NutriGen-AI
 
 ---
 
-#  Application Pages
+## ✨ Features
 
-### 1️⃣ Home Page
-
-The landing page introduces the Nutrigen AI platform and guides users toward exploring recipes or generating new ones using AI.
-
-Features:
-
-* Attractive hero section
-* Call-to-action buttons
-* Navigation to other pages
-* Modern UI layout
+- AI-powered recipe generation from user ingredients  
+- Custom dietary preference filters (Veg, Vegan, High Protein, etc.)  
+- Calorie-based meal suggestions  
+- Cooking time selection (15 mins, 30 mins, etc.)  
+- Interactive preference tags for personalized recipes  
+- Clean and modern responsive interface  
+- Smooth user experience with dynamic UI interactions  
 
 ---
 
-### 2️⃣ Recipes Page
+## 🧠 How It Works
 
-This page allows users to **search and explore recipes** available in the system.
-
-Features:
-
-* Recipe search functionality
-* Ingredient-based filtering
-* Recipe browsing interface
-* Clean card-based UI
+1. User enters available ingredients.
+2. User selects dietary preferences and filters.
+3. The application sends the request to an AI API.
+4. AI generates a customized recipe with instructions.
+5. The recipe is displayed on a dedicated results page.
 
 ---
 
-### 3️⃣ AI Recipe Generator Page
+## 🛠️ Technologies Used
 
-The AI page allows users to generate recipes based on different inputs.
-
-Users can generate recipes using:
-
-* Ingredients
-* Calories
-* Cooking time
-* Veg / Non-Veg preference
-* Meal type
-
-The AI then produces a **custom recipe suggestion**.
+- **Framer** – UI development and interactive components  
+- **Figma** – UI/UX design and layout prototyping  
+- **React / TypeScript** – component logic and overrides  
+- **JavaScript** – frontend interaction handling  
+- **AI API (Groq / LLaMA model)** – recipe generation  
+- **Vercel** – backend API deployment  
 
 ---
 
-# 🛠️ Technologies Used
+## 🎨 UI/UX Design
 
-### 🎨 Design
+The interface was designed to provide a **simple and intuitive cooking assistant experience**.
 
-* **Figma** – Used for UI/UX design, layout creation, and prototyping. Figma is a collaborative web-based design tool widely used for building interface designs and interactive prototypes. ([Wikipedia][2])
-
-### 🌐 Website Prototype
-
-* **Framer** – Used to build and publish the interactive website prototype without heavy coding. ([UI Things][1])
-
-### 💡 Planned Technologies (Future Development)
-
-* AI / Machine Learning for recipe generation
-* Backend API integration
-* Database for recipe storage
-* Authentication system
+Key design goals:
+- Minimal and clean layout
+- Easy ingredient input
+- Quick preference selection
+- Instant AI-generated results
+- Mobile-friendly responsive design
 
 ---
 
-# 🎯 Project Goals
+## 👩‍💻 My Role
 
-The goal of this project is to:
-
-* Design an **AI-driven recipe generation platform**
-* Create a **user-friendly food discovery experience**
-* Explore **AI integration in nutrition and diet planning**
-* Develop a **modern UI/UX prototype before backend development**
-
----
-
-# 🚀 Future Improvements
-
-Planned enhancements include:
-
-* AI-powered recipe generation
-* User login and profile management
-* Personalized diet plans
-* Save favorite recipes
-* Nutritional analysis for recipes
-* Backend API integration
-* Database for recipe storage
-* Mobile responsive improvements
+- Designed the UI/UX using **Figma and Framer**
+- Developed the interactive frontend layout
+- Integrated AI-based recipe generation
+- Implemented preference filters and dynamic UI components
+- Deployed and tested the full application workflow
 
 ---
 
-# 📸 Preview
+## 📸 Preview
 
-You can explore the live prototype here:
-
-👉 [https://attractive-products-425244.framer.app/](https://attractive-products-425244.framer.app/)
+<img src="nutrigen.png" alt="NutriGen AI Preview" width="800"/>
 
 ---
 
-# 👩‍💻 Author
+## 📌 Future Improvements
 
-**Poornashri M**
+- Nutrition breakdown (calories, protein, fats, vitamins)
+- Weekly meal planning feature
+- Grocery list generator
+- Save favorite recipes
+- User accounts and personalization
 
-UI/UX Designer | Full Stack Developer (Learning)
+---
 
-Skills:
+## 📄 License
 
-* Figma
-* Framer
-* HTML
-* CSS
-* JavaScript
-* React
-* Backend Development 
-
+This project is for educational and portfolio purposes.
