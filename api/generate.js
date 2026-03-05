@@ -1,36 +1,62 @@
 import Groq from "groq-sdk";
 
-export default async function handler(req, res) {
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
 
+export default async function handler(req, res) {
+  // -------- CORS HEADERS --------
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Handle preflight requests
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  // Only allow POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-
     const { ingredients } = req.body;
 
-    const groq = new Groq({
-      apiKey: process.env.GROQ_API_KEY
-    });
+    if (!ingredients) {
+      return res.status(400).json({
+        error: "Ingredients are required",
+      });
+    }
 
     const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+      model: "llama3-70b-8192",
       messages: [
         {
+          role: "system",
+          content:
+            "You are a professional chef AI. Generate a clear recipe using the provided ingredients.",
+        },
+        {
           role: "user",
-          content: `Generate a healthy recipe using ${ingredients}`
-        }
-      ]
+          content: `Create a recipe using these ingredients: ${ingredients}. Include recipe name, ingredients list, and step-by-step instructions.`,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 500,
     });
 
-    res.status(200).json({
-      recipe: completion.choices[0].message.content
-    });
+    const recipe = completion.choices[0].message.content;
 
+    return res.status(200).json({
+      recipe: recipe,
+    });
   } catch (error) {
-    res.status(500).json({
-      error: "AI generation failed"
+    console.error("AI generation error:", error);
+
+    return res.status(500).json({
+      error: "AI generation failed",
     });
   }
 }
+
