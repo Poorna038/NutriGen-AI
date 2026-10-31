@@ -2,7 +2,7 @@
   "name": "nutrigen-ai-backend",
   "version": "1.0.0",
   "description": "NutriGen AI recipe generation backend",
-  "main": "server.js",
+  "main": "generate.js",
   "scripts": {
     "start": "node generate.js"
   },
