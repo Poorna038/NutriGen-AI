@@ -5,7 +5,7 @@ const Groq = require("groq-sdk")
 const app = express()
 
 // =====================================================
-// MIDDLEWARE
+// CORS
 // =====================================================
 
 app.use(
@@ -27,7 +27,7 @@ const groq = new Groq({
 })
 
 // =====================================================
-// TEST ROUTE
+// HOME
 // =====================================================
 
 app.get("/", (req, res) => {
@@ -53,8 +53,10 @@ app.get("/health", (req, res) => {
 
 app.post("/api/generate", async (req, res) => {
     try {
-        const { ingredients, preferences } =
-            req.body || {}
+        const {
+            ingredients,
+            preferences,
+        } = req.body || {}
 
         console.log(
             "Ingredients:",
@@ -66,9 +68,9 @@ app.post("/api/generate", async (req, res) => {
             preferences
         )
 
-        // -------------------------------------------------
-        // Check ingredients
-        // -------------------------------------------------
+        // =================================================
+        // VALIDATE INGREDIENTS
+        // =================================================
 
         if (
             !ingredients ||
@@ -76,19 +78,17 @@ app.post("/api/generate", async (req, res) => {
             !ingredients.trim()
         ) {
             return res.status(400).json({
-                error:
-                    "Ingredients are required",
+                error: "Ingredients are required",
             })
         }
 
-        // -------------------------------------------------
-        // Call Groq
-        // -------------------------------------------------
+        // =================================================
+        // GROQ REQUEST
+        // =================================================
 
         const completion =
             await groq.chat.completions.create({
-                model:
-                    "llama-3.3-70b-versatile",
+                model: "openai/gpt-oss-120b",
 
                 messages: [
                     {
@@ -140,12 +140,13 @@ Instructions:
                 ],
 
                 temperature: 0.7,
+
                 max_tokens: 600,
             })
 
-        // -------------------------------------------------
-        // Get recipe
-        // -------------------------------------------------
+        // =================================================
+        // GET RECIPE
+        // =================================================
 
         const recipe =
             completion?.choices?.[0]?.message
@@ -156,9 +157,9 @@ Instructions:
             recipe
         )
 
-        // -------------------------------------------------
-        // Check recipe
-        // -------------------------------------------------
+        // =================================================
+        // CHECK RECIPE
+        // =================================================
 
         if (!recipe) {
             return res.status(500).json({
@@ -167,9 +168,9 @@ Instructions:
             })
         }
 
-        // -------------------------------------------------
-        // Send recipe to Framer
-        // -------------------------------------------------
+        // =================================================
+        // SEND RESPONSE
+        // =================================================
 
         return res.status(200).json({
             recipe: recipe,
@@ -195,8 +196,12 @@ Instructions:
 const PORT =
     process.env.PORT || 10000
 
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(
-        `NutriGen AI server running on port ${PORT}`
-    )
-})
+app.listen(
+    PORT,
+    "0.0.0.0",
+    () => {
+        console.log(
+            `NutriGen AI server running on port ${PORT}`
+        )
+    }
+)
