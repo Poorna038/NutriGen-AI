@@ -4,7 +4,7 @@
   "description": "NutriGen AI recipe generation backend",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node generate.js"
   },
   "keywords": [],
   "author": "",
