@@ -5,64 +5,120 @@ const groq = new Groq({
 });
 
 export default async function handler(req, res) {
+
+    // ==============================
     // CORS
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    // ==============================
+
+    res.setHeader(
+        "Access-Control-Allow-Origin",
+        "*"
+    );
+
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "POST, OPTIONS"
+    );
+
     res.setHeader(
         "Access-Control-Allow-Headers",
         "Content-Type"
     );
 
-    // Handle preflight request
+
+    // ==============================
+    // OPTIONS REQUEST
+    // ==============================
+
     if (req.method === "OPTIONS") {
         return res.status(200).end();
     }
 
-    // Only allow POST
+
+    // ==============================
+    // ONLY POST ALLOWED
+    // ==============================
+
     if (req.method !== "POST") {
         return res.status(405).json({
             error: "Method not allowed",
         });
     }
 
+
     try {
-        // Get data from Framer
-        const { ingredients, preferences } = req.body || {};
 
-        console.log("Ingredients received:", ingredients);
-        console.log("Preferences received:", preferences);
+        // ==============================
+        // GET DATA FROM FRAMER
+        // ==============================
 
-        // Check ingredients
-        if (!ingredients || ingredients.trim() === "") {
+        const {
+            ingredients,
+            preferences
+        } = req.body || {};
+
+
+        console.log(
+            "Ingredients:",
+            ingredients
+        );
+
+        console.log(
+            "Preferences:",
+            preferences
+        );
+
+
+        // ==============================
+        // CHECK INGREDIENTS
+        // ==============================
+
+        if (
+            !ingredients ||
+            ingredients.trim() === ""
+        ) {
+
             return res.status(400).json({
-                error: "Please provide ingredients",
+                error:
+                    "Please enter ingredients.",
             });
         }
 
-        // Generate recipe using Groq
-        const completion = await groq.chat.completions.create({
-            model: "llama-3.3-70b-versatile",
 
-            messages: [
-                {
-                    role: "system",
-                    content:
-                        "You are a professional chef and nutrition expert. Create healthy, practical and personalized recipes based on the ingredients and user preferences provided.",
-                },
+        // ==============================
+        // GROQ REQUEST
+        // ==============================
 
-                {
-                    role: "user",
-                    content: `
-Create a healthy and personalized recipe using the following ingredients:
+        const completion =
+            await groq.chat.completions.create({
+
+                model:
+                    "llama-3.3-70b-versatile",
+
+                messages: [
+
+                    {
+                        role: "system",
+
+                        content:
+                            "You are a professional chef and nutrition expert. Create healthy, practical and personalized recipes."
+                    },
+
+                    {
+                        role: "user",
+
+                        content: `
+Create a healthy recipe using these ingredients:
 
 ${ingredients}
 
 User Preferences:
+
 ${preferences || "No specific preferences"}
 
-Return the answer as readable plain text.
+Return the recipe as readable plain text.
 
-Use exactly this format:
+Use this format:
 
 Recipe Name
 
@@ -86,41 +142,74 @@ Instructions:
 4. Step four
 
 Make the recipe practical and easy to prepare.
-`,
-                },
-            ],
+`
+                    }
 
-            temperature: 0.7,
-            max_tokens: 800,
-        });
+                ],
 
-        // Get generated recipe
+                temperature: 0.7,
+
+                max_tokens: 800,
+            });
+
+
+        // ==============================
+        // GET RECIPE
+        // ==============================
+
         const recipe =
-            completion.choices?.[0]?.message?.content;
+            completion
+                .choices?.[0]
+                ?.message?.content;
 
-        console.log("Generated recipe:", recipe);
 
-        // Check recipe
+        console.log(
+            "Generated recipe:",
+            recipe
+        );
+
+
+        // ==============================
+        // CHECK RECIPE
+        // ==============================
+
         if (!recipe) {
+
             return res.status(500).json({
-                error: "Groq did not return a recipe",
+                error:
+                    "Groq did not return a recipe.",
             });
         }
 
-        // Send recipe back to Framer
+
+        // ==============================
+        // SEND RECIPE TO FRAMER
+        // ==============================
+
         return res.status(200).json({
+
             success: true,
+
             recipe: recipe,
+
         });
 
     } catch (error) {
-        console.error("Groq API error:", error);
+
+        console.error(
+            "Groq API Error:",
+            error
+        );
+
 
         return res.status(500).json({
+
             success: false,
+
             error:
                 error?.message ||
-                "AI generation failed",
+                "AI generation failed.",
+
         });
     }
 }
