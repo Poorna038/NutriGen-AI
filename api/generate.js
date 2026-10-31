@@ -1,124 +1,62 @@
-import Groq from "groq-sdk";
+const Groq = require("groq-sdk")
 
 const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY,
-});
+})
 
-export default async function handler(req, res) {
-
-    // ==============================
+module.exports = async function handler(req, res) {
     // CORS
-    // ==============================
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS")
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type")
 
-    res.setHeader(
-        "Access-Control-Allow-Origin",
-        "*"
-    );
-
-    res.setHeader(
-        "Access-Control-Allow-Methods",
-        "POST, OPTIONS"
-    );
-
-    res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Content-Type"
-    );
-
-
-    // ==============================
-    // OPTIONS REQUEST
-    // ==============================
-
+    // Handle browser preflight
     if (req.method === "OPTIONS") {
-        return res.status(200).end();
+        return res.status(200).end()
     }
 
-
-    // ==============================
-    // ONLY POST ALLOWED
-    // ==============================
-
+    // Only allow POST
     if (req.method !== "POST") {
         return res.status(405).json({
             error: "Method not allowed",
-        });
+        })
     }
 
-
     try {
+        const { ingredients, preferences } = req.body || {}
 
-        // ==============================
-        // GET DATA FROM FRAMER
-        // ==============================
-
-        const {
-            ingredients,
-            preferences
-        } = req.body || {};
-
-
-        console.log(
-            "Ingredients:",
-            ingredients
-        );
-
-        console.log(
-            "Preferences:",
-            preferences
-        );
-
-
-        // ==============================
-        // CHECK INGREDIENTS
-        // ==============================
-
-        if (
-            !ingredients ||
-            ingredients.trim() === ""
-        ) {
-
+        if (!ingredients || !ingredients.trim()) {
             return res.status(400).json({
-                error:
-                    "Please enter ingredients.",
-            });
+                error: "Ingredients are required",
+            })
         }
 
+        console.log("Ingredients:", ingredients)
+        console.log("Preferences:", preferences)
 
-        // ==============================
-        // GROQ REQUEST
-        // ==============================
+        const completion = await groq.chat.completions.create({
+            model: "llama-3.3-70b-versatile",
 
-        const completion =
-            await groq.chat.completions.create({
-
-                model:
-                    "llama-3.3-70b-versatile",
-
-                messages: [
-
-                    {
-                        role: "system",
-
-                        content:
-                            "You are a professional chef and nutrition expert. Create healthy, practical and personalized recipes."
-                    },
-
-                    {
-                        role: "user",
-
-                        content: `
-Create a healthy recipe using these ingredients:
+            messages: [
+                {
+                    role: "system",
+                    content:
+                        "You are a professional chef and nutrition expert who creates personalized recipes.",
+                },
+                {
+                    role: "user",
+                    content: `
+Create a healthy and delicious recipe using these ingredients:
 
 ${ingredients}
 
-User Preferences:
+User preferences:
 
 ${preferences || "No specific preferences"}
 
-Return the recipe as readable plain text.
+Return the answer as readable text.
 
-Use this format:
+Use exactly this format:
 
 Recipe Name
 
@@ -140,76 +78,30 @@ Instructions:
 2. Step two
 3. Step three
 4. Step four
+`,
+                },
+            ],
 
-Make the recipe practical and easy to prepare.
-`
-                    }
+            temperature: 0.7,
+            max_tokens: 600,
+        })
 
-                ],
-
-                temperature: 0.7,
-
-                max_tokens: 800,
-            });
-
-
-        // ==============================
-        // GET RECIPE
-        // ==============================
-
-        const recipe =
-            completion
-                .choices?.[0]
-                ?.message?.content;
-
-
-        console.log(
-            "Generated recipe:",
-            recipe
-        );
-
-
-        // ==============================
-        // CHECK RECIPE
-        // ==============================
+        const recipe = completion?.choices?.[0]?.message?.content
 
         if (!recipe) {
-
-            return res.status(500).json({
-                error:
-                    "Groq did not return a recipe.",
-            });
+            throw new Error("Groq did not return a recipe")
         }
 
-
-        // ==============================
-        // SEND RECIPE TO FRAMER
-        // ==============================
+        console.log("Recipe generated successfully")
 
         return res.status(200).json({
-
-            success: true,
-
             recipe: recipe,
-
-        });
-
+        })
     } catch (error) {
-
-        console.error(
-            "Groq API Error:",
-            error
-        );
-
+        console.error("Groq API Error:", error)
 
         return res.status(500).json({
-
-            success: false,
-
-            error:
-                error?.message ||
-                "AI generation failed.",
-
-        });
+            error: error?.message || "AI generation failed",
+        })
     }
 }
